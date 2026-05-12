@@ -1,0 +1,10 @@
+#!/bin/bash
+echo -e "\e[1mОбновление пакетов\e[0m"
+echo
+sleep 1
+sudo xbps-install -Su
+sudo xbps-remove -o
+echo -e "\e[1mГотово!\e[0m"
+sleep 2
+exit
+
