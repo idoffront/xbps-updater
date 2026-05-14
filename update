@@ -1,10 +1,17 @@
 #!/bin/bash
+echo -e "\e[1mСинхронизация репозиториев\e[0m"
+echo
+sudo xbps-install -S
+echo
 echo -e "\e[1mОбновление пакетов\e[0m"
 echo
-sleep 1
-sudo xbps-install -Su
+sudo xbps-install -u
+echo
+echo -e "\e[1mПакеты обновлены или обновлений нет\e[0m"
+echo
 sudo xbps-remove -o
+echo
 echo -e "\e[1mГотово!\e[0m"
-sleep 2
+sleep 1
 exit
 
