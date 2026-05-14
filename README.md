@@ -9,8 +9,8 @@
 ## Как скачать??
 Ввести одну простую команду:
 ```bash
-curl -fsSL https://raw.githubusercontent.com/idoffront/xbps-updater/main/install | bash'
+curl -fsSL https://raw.githubusercontent.com/idoffront/xbps-updater/main/install | bash
 ```
 Оно скачает update в временную директорию (на будущее), перекинет в /usr/local/bin и удалит временный репозиторий.
 
-# Хайп.
+## Хайп.
