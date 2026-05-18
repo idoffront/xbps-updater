@@ -1,6 +1,6 @@
 #!/bin/bash
 
-info(){
+info() {
     echo -e "\e[1mИнформация о Системе\e[0m"
     echo "--------------------"
 
@@ -10,18 +10,26 @@ info(){
 
     packages=$(xbps-query -l | wc -l)
 
-    printf "Дистрибутив : %s\n" "$distro"
-    printf "Ядро        : %s\n" "$kernel"
-    printf "Пакеты      : %s\n" "$packages"
+    de=${XDG_CURRENT_DESKTOP:-Unknown}
+
+    disk=$(df -h / | awk 'NR==2 {print $1 " " $2 " / " $3}')
+
+    uptime=$(uptime -p)
+
+    printf "Дистрибутив  : %s\n" "$distro"
+    printf "Ядро         : %s\n" "$kernel"
+    printf "Пакеты       : %s\n" "$packages"
+    printf "Граф. Окруж. : %s\n" "$de"
+    printf "Диск         : %s\n" "$disk"
+    printf "Время работы : %s\n" "$uptime"
     echo
     echo "Репозитории:"
 
-    grep -h '^repository=' /etc/xbps.d/*.conf 2>/dev/null \
-    | cut -d= -f2 \
-    | sed 's/^/ [*] /'
+    xbps-query -L | sed 's/^/ [*] /'
 }
 
 update() {
+    sudo -v
     echo -e "\e[1mСинхронизация репозиториев\e[0m"
     echo
     sudo xbps-install -S
@@ -37,6 +45,48 @@ update() {
     echo -e "\e[1mГотово!\e[0m"
 }
 
+check_service() {
+    service=$1
+
+    status=$(sudo sv status "$service" 2>/dev/null)
+
+    if echo "$status" |grep -q '^run:'; then
+        echo "[ОК] $service"
+    else
+        echo "[НЕ РАБОТАЕТ] $service"
+    fi
+}
+
+check() {
+    sudo -v
+    echo -e "\e[1mПроверка служб\e[0m"
+    echo "-------------"
+    echo -e "\e[1mСеть:\e[0m"
+    check_service "NetworkManager"
+    check_service "wpa_supplicant"
+    echo -e "\e[1mЗвук:\e[0m"
+    any_diff_process_BLYAT "pipewire"
+    any_diff_process_BLYAT "wireplumber"
+    echo -e "\e[1mОстальное:\e[0m"
+    check_service "dbus"
+    check_service "polkitd"
+    check_service "bluetoothd"
+    check_service "sshd"
+    echo
+    echo "NetworkManager и wpa_supplicant взаимозаменяемые, если один работает, а другой нет - всё хорошо"
+    echo "Почему у вас может не работать bluetoothd, думаю, вы сами знаете"
+}
+
+any_diff_process_BLYAT() {
+    process="$1"
+
+    if pgrep "$process" >/dev/null; then
+        echo "[ОК] $process"
+    else
+        echo "[НЕ РАБОТАЕТ] $process"
+    fi
+}
+
 case "$1" in
     info)
         info
@@ -46,8 +96,22 @@ case "$1" in
         update
         ;;
 
-    *)
-        echo "Доступные команды: vh {info|update}"
+    check_s)
+        check_service "$2"
         ;;
+
+    check)
+        check
+        ;;
+
+    *)
+        echo "Доступные команды: vh {info|update|check|check_s}"
+        echo -e "\e[1m~~~\e[0m"
+        echo "info - выдает достаточно useful информацию об системе"
+        echo "update - обновляет систему/пакеты"
+        echo "check - проверяет важные сервисы"
+        echo "check_s [сервис] - проверяет нужный вам сервис"
+        ;;
+
 
 esac
