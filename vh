@@ -87,6 +87,12 @@ any_diff_process_BLYAT() {
     fi
 }
 
+update-vh() {
+    echo -e "\e[1mОбновление Void-Helper\e[0m"
+    curl -fsSL https://raw.githubusercontent.com/idoffront/xbps-updater/main/install | bash
+    echo -e "\e[1mОбновление завершено\e[0m"
+}
+
 case "$1" in
     info)
         info
@@ -103,12 +109,17 @@ case "$1" in
     check)
         check
         ;;
-
+        
+    update-vh)
+        update-vh
+        ;;
+        
     *)
-        echo "Доступные команды: vh {info|update|check|check_s}"
+        echo "Доступные команды: vh {info|update|update-vh|check|check_s}"
         echo -e "\e[1m~~~\e[0m"
         echo "info - выдает достаточно useful информацию об системе"
         echo "update - обновляет систему/пакеты"
+        echo "update-vh - обновляет этот скрипт"
         echo "check - проверяет важные сервисы"
         echo "check_s [сервис] - проверяет нужный вам сервис"
         ;;
