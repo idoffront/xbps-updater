@@ -98,11 +98,11 @@ find() {
     query=$(xbps-query -Rs "$packet" 2>/dev/null)
     
     echo -e "\e[1mПоиск пакета:\e[0m"
-    if echo "$query" | grep -q  '['; then
+    if echo "$query" | grep -q  '[-]'; then
         xbps-query -Rs "$packet"
     else
         echo -e "\e[1mПакет не найден.\e[0m"
-        echo -e "\e[1mПопробуйте написать пакет с большой, либо маленькой буквы.\e[0m"
+        echo -e "\e[1mПопробуйте написать название с большой, либо маленькой буквы.\e[0m"
     fi
 }
 
