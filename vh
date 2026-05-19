@@ -73,8 +73,8 @@ check() {
     check_service "bluetoothd"
     check_service "sshd"
     echo
-    echo "NetworkManager и wpa_supplicant взаимозаменяемые, если один работает, а другой нет - всё хорошо"
-    echo "Почему у вас может не работать bluetoothd, думаю, вы сами знаете"
+    echo "NetworkManager и wpa_supplicant взаимозаменяемые, если один работает, а другой нет - всё хорошо."
+    echo "Почему у вас может не работать bluetoothd, думаю, вы сами знаете."
 }
 
 any_diff_process_BLYAT() {
@@ -89,8 +89,21 @@ any_diff_process_BLYAT() {
 
 update-vh() {
     echo -e "\e[1mОбновление Void-Helper\e[0m"
-    curl -fsSL https://raw.githubusercontent.com/idoffront/xbps-updater/main/install | bash
-    echo -e "\e[1mОбновление завершено\e[0m"
+    curl -fsSL https://raw.githubusercontent.com/idoffront/void-helper/main/install | bash
+    echo -e "\e[1mОбновление завершено.\e[0m"
+}
+
+find() {
+    packet=$1
+    query=$(xbps-query -Rs "$packet" 2>/dev/null)
+    
+    echo -e "\e[1mПоиск пакета:\e[0m"
+    if echo "$query" | grep -q  '[-]'; then
+        xbps-query -Rs "$packet"
+    else
+        echo -e "\e[1mПакет не найден.\e[0m"
+        echo -e "\e[1mПопробуйте написать название с большой, либо маленькой буквы.\e[0m"
+    fi
 }
 
 case "$1" in
@@ -114,10 +127,15 @@ case "$1" in
         update-vh
         ;;
         
+    find)
+        find "$2"
+        ;;
+        
     *)
         echo "Доступные команды: vh {info|update|update-vh|check|check_s}"
         echo -e "\e[1m~~~\e[0m"
         echo "info - выдает достаточно useful информацию об системе"
+        echo "find - находит пакет в репозиториях"
         echo "update - обновляет систему/пакеты"
         echo "update-vh - обновляет этот скрипт"
         echo "check - проверяет важные сервисы"
