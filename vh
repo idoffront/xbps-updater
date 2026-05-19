@@ -132,7 +132,7 @@ case "$1" in
         ;;
         
     *)
-        echo "Доступные команды: vh {info|update|update-vh|check|check_s}"
+        echo "Доступные команды: vh {info|find|update|update-vh|check|check_s}"
         echo -e "\e[1m~~~\e[0m"
         echo "info - выдает достаточно useful информацию об системе"
         echo "find - находит пакет в репозиториях"
