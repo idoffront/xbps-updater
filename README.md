@@ -18,6 +18,7 @@
 curl -fsSL https://raw.githubusercontent.com/idoffront/xbps-updater/main/install | bash
 ```
 Оно скачает **vh** в временную директорию (на будущее), перекинет в /usr/local/bin и удалит временный репозиторий.
+
 Если вам нужно обновить **vh**, то просто введите:
 ```bash
 vh update-vh
